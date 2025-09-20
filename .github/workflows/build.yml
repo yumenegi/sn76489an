@@ -37,6 +37,10 @@ jobs:
       # Use the "Debug" preset to generate the build files in the build/Debug directory
       run: cmake --preset Debug -B build/Debug
 
+    - name: Build project
+        # Run the build using the generated Ninja files
+        run: cmake --build build/Debug
+
     - name: Upload Firmware Artifact
       # This step uploads the compiled .elf file as a downloadable artifact
       uses: actions/upload-artifact@v4
