@@ -35,11 +35,6 @@ set(STM32_Drivers_Src
   ${CMAKE_CURRENT_SOURCE_DIR}/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_exti.c
 )
 
-# Project static libraries
-set(MX_LINK_LIBS
-  micro-support
-  ${TOOLCHAIN_LINK_LIBRARIES}
-)
 
 # Interface library for includes and symbols
 add_library(micro-support-intf INTERFACE)
@@ -64,6 +59,6 @@ target_sources(
 )
 target_link_libraries(
   micro-support 
-  PUBLIC 
+  PRIVATE 
   micro-support-intf 
 )
