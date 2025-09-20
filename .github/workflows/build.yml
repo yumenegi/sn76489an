@@ -46,4 +46,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: firmware
-        path: build/Debug/${{ vars.CMAKE_PROJECT_NAME }}.elf
+        path: build/Debug/*.elf
