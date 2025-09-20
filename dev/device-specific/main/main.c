@@ -98,7 +98,9 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+    // BLINK MF BLINK
+    HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin); // Toggle the LED
+    HAL_Delay(500);  
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
