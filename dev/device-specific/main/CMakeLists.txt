@@ -1,7 +1,9 @@
-target_sources(
-  ${CMAKE_PROJECT_NAME} 
-  PRIVATE 
-  main.c
+add_library(device-config-intf INTERFACE)
+
+target_include_directories(
+  device-config-intf
+  INTERFACE
+  .
 )
 
 target_include_directories(
@@ -9,11 +11,14 @@ target_include_directories(
   PRIVATE
   .
 )
+
 target_link_libraries(
   ${CMAKE_PROJECT_NAME} 
   PRIVATE
-  micro-support
   device-config
+  device-config-intf
+  micro-support
+  micro-support-intf
 )
 
 set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES ADDITIONAL_CLEAN_FILES ${CMAKE_PROJECT_NAME}.map)

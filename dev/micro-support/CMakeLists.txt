@@ -60,5 +60,6 @@ target_sources(
 target_link_libraries(
   micro-support 
   PRIVATE 
+  device-config-intf
   micro-support-intf 
 )
