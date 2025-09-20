@@ -1,9 +1,12 @@
-add_library(device-config-intf INTERFACE)
-
-target_include_directories(
-  device-config-intf
-  INTERFACE
-  .
+target_sources(
+  ${CMAKE_PROJECT_NAME} 
+  PRIVATE 
+  main.c
+  startup_stm32f411xe.s
+  stm32f4xx_hal_msp.c
+  stm32f4xx_it.c
+  syscalls.c
+  sysmem.c
 )
 
 target_include_directories(
@@ -15,7 +18,6 @@ target_include_directories(
 target_link_libraries(
   ${CMAKE_PROJECT_NAME} 
   PRIVATE
-  device-config
   device-config-intf
   micro-support
   micro-support-intf
