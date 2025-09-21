@@ -16,7 +16,7 @@
 
 #include <stdint.h>
 
-/// @brief SN76489 channels
+/// @brief SN76489AN channels
 #define SN76489AN_TONE_CHANNEL_0 0
 #define SN76489AN_TONE_CHANNEL_1 1
 #define SN76489AN_TONE_CHANNEL_2 2
