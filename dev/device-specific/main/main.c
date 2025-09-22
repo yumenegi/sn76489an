@@ -152,10 +152,8 @@ static void playFamima(void) {
   // A
   PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_AB5);
   PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x00);
-  HAL_Delay(EIGHTH_DELAY_MS_95BPM);
+  HAL_Delay(QUARTER_DELAY_MS_95BPM);
   PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x0F);
-
-  HAL_Delay(EIGHTH_DELAY_MS_95BPM);
 
   // E
   PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_EB4);
