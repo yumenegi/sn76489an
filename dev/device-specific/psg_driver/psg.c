@@ -5,7 +5,7 @@
 #include "cmsis_gcc.h"
 #include <stdint.h>
 
-#define PSG_WAIT_CYCLE 5
+#define PSG_WAIT_CYCLE 100
 
 /// @brief Are we using chip enable?
 // #define SN76489AN_USE_CE
@@ -64,6 +64,7 @@ void PSG_Write(uint8_t payload) {
   HAL_GPIO_WritePin(SN_WE_GPIO_PORT, SN_WE_PIN, GPIO_PIN_RESET);
   PSG_Wait(); // Hold WE low for a minimum time (see datasheet)
   HAL_GPIO_WritePin(SN_WE_GPIO_PORT, SN_WE_PIN, GPIO_PIN_SET);
+  PSG_Wait(); // Hold WE low for a minimum time (see datasheet)
 }
 
 void PSG_SetFrequency(uint8_t channel, uint16_t freq) {
