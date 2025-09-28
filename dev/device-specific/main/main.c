@@ -1,23 +1,27 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2025 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : main.c
+ * @brief          : Main program body
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2025 YUMENEGI INDUSTRIES.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "note_freq.h"
+#include "psg.h"
+#include "stm32f4xx_hal.h"
+#include <stdint.h>
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -49,10 +53,9 @@ UART_HandleTypeDef huart2;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
+static void SN76489_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
-/* USER CODE BEGIN PFP */
-
-/* USER CODE END PFP */
+static void playFamima(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
@@ -60,11 +63,10 @@ static void MX_USART2_UART_Init(void);
 /* USER CODE END 0 */
 
 /**
-  * @brief  The application entry point.
-  * @retval int
-  */
-int main(void)
-{
+ * @brief  The application entry point.
+ * @retval int
+ */
+int main(void) {
 
   /* USER CODE BEGIN 1 */
 
@@ -72,7 +74,8 @@ int main(void)
 
   /* MCU Configuration--------------------------------------------------------*/
 
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick.
+   */
   HAL_Init();
 
   /* USER CODE BEGIN Init */
@@ -88,41 +91,134 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  SN76489_GPIO_Init();
   MX_USART2_UART_Init();
-  /* USER CODE BEGIN 2 */
+  // Mute All
+  PSG_Init();
+  HAL_Delay(WHOLE_DELAY_MS_95BPM);
 
-  /* USER CODE END 2 */
-
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-    /* USER CODE END WHILE */
-    // BLINK MF BLINK
-    HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin); // Toggle the LED
-    HAL_Delay(500);  
-    /* USER CODE BEGIN 3 */
+  /* Main loop */
+  while (1) {
+    playFamima();
+    // PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_A4);
+    // PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x00);
+    // HAL_Delay(EIGHTH_DELAY_MS_95BPM);
+    // PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x0F);
+    // HAL_Delay(WHOLE_QUARTER_MS_95BPM);
   }
-  /* USER CODE END 3 */
 }
 
 /**
-  * @brief System Clock Configuration
-  * @retval None
-  */
-void SystemClock_Config(void)
-{
+ * @brief  Plays the Famima jingle
+ * @return None
+ */
+static void playFamima(void) {
+  // F#
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_F5);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x00);
+  HAL_Delay(EIGHTH_DELAY_MS_95BPM);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x0F);
+
+  // D
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_DB5);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x00);
+  HAL_Delay(EIGHTH_DELAY_MS_95BPM);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x0F);
+
+  // F# + A
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_AB5);
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_1, NOTE_F4);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x00);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_1, 0x00);
+  HAL_Delay(EIGHTH_DELAY_MS_95BPM);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x0F);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_1, 0x0F);
+
+  // D
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_DB5);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x00);
+  HAL_Delay(EIGHTH_DELAY_MS_95BPM);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x0F);
+
+  // A + E
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_C5);
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_1, NOTE_EB5);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x00);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_1, 0x00);
+  HAL_Delay(EIGHTH_DELAY_MS_95BPM);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x0F);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_1, 0x0F);
+
+  // A
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_AB5);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x00);
+  HAL_Delay(QUARTER_DELAY_MS_95BPM);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x0F);
+
+  // E
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_EB4);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x00);
+  HAL_Delay(EIGHTH_DELAY_MS_95BPM);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x0F);
+
+  // A + E
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_AB5);
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_1, NOTE_EB5);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x00);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_1, 0x00);
+  HAL_Delay(EIGHTH_DELAY_MS_95BPM);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x0F);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_1, 0x0F);
+
+  // F#
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_F5);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x00);
+  HAL_Delay(EIGHTH_DELAY_MS_95BPM);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x0F);
+
+  // A + E
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_AB5);
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_1, NOTE_EB5);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x00);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_1, 0x00);
+  HAL_Delay(EIGHTH_DELAY_MS_95BPM);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x0F);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_1, 0x0F);
+
+  // F#
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_AB5);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x00);
+  HAL_Delay(EIGHTH_DELAY_MS_95BPM);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x0F);
+
+  // F# + D
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_DB5);
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_1, NOTE_F4);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x00);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_1, 0x00);
+  HAL_Delay(QUARTER_DELAY_MS_95BPM);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x0F);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_1, 0x0F);
+
+  HAL_Delay(QUARTER_DELAY_MS_95BPM);
+}
+
+/**
+ * @brief System Clock Configuration
+ * @retval None
+ */
+void SystemClock_Config(void) {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
   /** Configure the main internal regulator output voltage
-  */
+   */
   __HAL_RCC_PWR_CLK_ENABLE();
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
   /** Initializes the RCC Oscillators according to the specified parameters
-  * in the RCC_OscInitTypeDef structure.
-  */
+   * in the RCC_OscInitTypeDef structure.
+   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
@@ -132,33 +228,30 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLN = 336;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;
   RCC_OscInitStruct.PLL.PLLQ = 4;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
-  {
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
     Error_Handler();
   }
 
   /** Initializes the CPU, AHB and APB buses clocks
-  */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+   */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK |
+                                RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
-  {
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK) {
     Error_Handler();
   }
 }
 
 /**
-  * @brief USART2 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_USART2_UART_Init(void)
-{
+ * @brief USART2 Initialization Function
+ * @param None
+ * @retval None
+ */
+static void MX_USART2_UART_Init(void) {
 
   /* USER CODE BEGIN USART2_Init 0 */
 
@@ -175,23 +268,20 @@ static void MX_USART2_UART_Init(void)
   huart2.Init.Mode = UART_MODE_TX_RX;
   huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
   huart2.Init.OverSampling = UART_OVERSAMPLING_16;
-  if (HAL_UART_Init(&huart2) != HAL_OK)
-  {
+  if (HAL_UART_Init(&huart2) != HAL_OK) {
     Error_Handler();
   }
   /* USER CODE BEGIN USART2_Init 2 */
 
   /* USER CODE END USART2_Init 2 */
-
 }
 
 /**
-  * @brief GPIO Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_GPIO_Init(void)
-{
+ * @brief GPIO Initialization Function
+ * @param None
+ * @retval None
+ */
+static void MX_GPIO_Init(void) {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   /* USER CODE BEGIN MX_GPIO_Init_1 */
 
@@ -219,9 +309,46 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
 
-  /* USER CODE BEGIN MX_GPIO_Init_2 */
 
-  /* USER CODE END MX_GPIO_Init_2 */
+}
+
+/**
+ * @brief Initializes the GPIO pins used for the SN76489 interface.
+ * This function should be called once at startup.
+ */
+static void SN76489_GPIO_Init(void) {
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+  /* Set initial state for all pins before configuring them */
+  // WE is active-low, so its idle state should be HIGH.
+  HAL_GPIO_WritePin(SN_WE_GPIO_PORT, SN_WE_PIN, GPIO_PIN_SET);
+
+  // Set data pins to LOW. It's good practice to start with a known state.
+  HAL_GPIO_WritePin(SN_D0_GPIO_PORT, SN_D0_PIN, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(SN_D1_GPIO_PORT, SN_D1_PIN, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(SN_D2_GPIO_PORT, SN_D2_PIN, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(SN_D3_GPIO_PORT, SN_D3_PIN, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(SN_D4_GPIO_PORT, SN_D4_PIN, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(SN_D5_GPIO_PORT, SN_D5_PIN, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(SN_D6_GPIO_PORT, SN_D6_PIN, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(SN_D7_GPIO_PORT, SN_D7_PIN, GPIO_PIN_RESET);
+
+  /* Configure common GPIO settings */
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;      // Push-Pull: Actively drives HIGH and LOW.
+  GPIO_InitStruct.Pull = GPIO_NOPULL;              // No internal pull-up or pull-down needed.
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;    // High speed for fast bit-banging.
+
+  /* Configure pins on GPIOA */
+  GPIO_InitStruct.Pin = SN_D0_PIN | SN_D5_PIN | SN_D6_PIN;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /* Configure pins on GPIOB */
+  GPIO_InitStruct.Pin = SN_D1_PIN | SN_D2_PIN | SN_D3_PIN | SN_D4_PIN | SN_WE_PIN;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /* Configure pins on GPIOC */
+  GPIO_InitStruct.Pin = SN_D7_PIN;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 }
 
 /* USER CODE BEGIN 4 */
@@ -229,32 +356,30 @@ static void MX_GPIO_Init(void)
 /* USER CODE END 4 */
 
 /**
-  * @brief  This function is executed in case of error occurrence.
-  * @retval None
-  */
-void Error_Handler(void)
-{
+ * @brief  This function is executed in case of error occurrence.
+ * @retval None
+ */
+void Error_Handler(void) {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
   __disable_irq();
-  while (1)
-  {
+  while (1) {
   }
   /* USER CODE END Error_Handler_Debug */
 }
 #ifdef USE_FULL_ASSERT
 /**
-  * @brief  Reports the name of the source file and the source line number
-  *         where the assert_param error has occurred.
-  * @param  file: pointer to the source file name
-  * @param  line: assert_param error line source number
-  * @retval None
-  */
-void assert_failed(uint8_t *file, uint32_t line)
-{
+ * @brief  Reports the name of the source file and the source line number
+ *         where the assert_param error has occurred.
+ * @param  file: pointer to the source file name
+ * @param  line: assert_param error line source number
+ * @retval None
+ */
+void assert_failed(uint8_t *file, uint32_t line) {
   /* USER CODE BEGIN 6 */
-  /* User can add his own implementation to report the file name and line number,
-     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+  /* User can add his own implementation to report the file name and line
+     number, ex: printf("Wrong parameters value: file %s on line %d\r\n", file,
+     line) */
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */

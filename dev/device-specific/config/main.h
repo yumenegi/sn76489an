@@ -1,21 +1,21 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file           : main.h
-  * @brief          : Header for main.c file.
-  *                   This file contains the common defines of the application.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2025 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : main.h
+ * @brief          : Header for main.c file.
+ *                   This file contains the common defines of the application.
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2025 2025 YUMENEGI INDUSTRIES.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
@@ -72,9 +72,31 @@ void Error_Handler(void);
 #define SWO_Pin GPIO_PIN_3
 #define SWO_GPIO_Port GPIOB
 
-/* USER CODE BEGIN Private defines */
+#define SN_D0_PIN GPIO_PIN_10
+#define SN_D1_PIN GPIO_PIN_3
+#define SN_D2_PIN GPIO_PIN_5
+#define SN_D3_PIN GPIO_PIN_4
+#define SN_D4_PIN GPIO_PIN_10
+#define SN_D5_PIN GPIO_PIN_8
+#define SN_D6_PIN GPIO_PIN_9
+#define SN_D7_PIN GPIO_PIN_7
+#define SN_WE_PIN GPIO_PIN_6
 
-/* USER CODE END Private defines */
+#define SN_D0_GPIO_PORT GPIOA
+#define SN_D1_GPIO_PORT GPIOB
+#define SN_D2_GPIO_PORT GPIOB
+#define SN_D3_GPIO_PORT GPIOB
+#define SN_D4_GPIO_PORT GPIOB
+#define SN_D5_GPIO_PORT GPIOA
+#define SN_D6_GPIO_PORT GPIOA
+#define SN_D7_GPIO_PORT GPIOC
+#define SN_WE_GPIO_PORT GPIOB
+
+#define SIXTEENTH_DELAY_MS_95BPM 158
+#define EIGHTH_DELAY_MS_95BPM 315
+#define QUARTER_DELAY_MS_95BPM 630
+#define HALF_DELAY_MS_95BPM 1260
+#define WHOLE_DELAY_MS_95BPM 2520
 
 #ifdef __cplusplus
 }

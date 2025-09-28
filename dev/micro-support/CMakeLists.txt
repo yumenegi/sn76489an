@@ -39,13 +39,13 @@ set(STM32_Drivers_Src
 # Interface library for includes and symbols
 add_library(micro-support-intf INTERFACE)
 target_include_directories(
-  micro-support-intf 
-  INTERFACE 
+  micro-support-intf
+  INTERFACE
   ${MX_Include_Dirs}
 )
 target_compile_definitions(
-  micro-support-intf 
-  INTERFACE 
+  micro-support-intf
+  INTERFACE
   ${MX_Defines_Syms}
 )
 
@@ -53,13 +53,13 @@ target_compile_definitions(
 add_library(micro-support OBJECT)
 
 target_sources(
-  micro-support 
-  PRIVATE 
+  micro-support
+  PRIVATE
   ${STM32_Drivers_Src}
 )
 target_link_libraries(
-  micro-support 
-  PRIVATE 
+  micro-support
+  PRIVATE
   device-config-intf
-  micro-support-intf 
+  micro-support-intf
 )
