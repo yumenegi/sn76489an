@@ -12,7 +12,7 @@
 
 /// @brief Defines SN76489AN Constants
 /// @brief Currently set at 3.5MHz
-#define SN76489AN_REF_CLK 4200000
+#define SN76489AN_REF_CLK 4500000
 
 ///@brief Macro to convert hertz 10-bit wave number
 #define SN76489AN_CALC_TONE_TMR_SET(f) (SN76489AN_REF_CLK / f / 32)
