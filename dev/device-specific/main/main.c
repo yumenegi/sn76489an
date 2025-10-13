@@ -21,6 +21,7 @@
 #include "note_freq.h"
 #include "psg.h"
 #include "stm32f4xx_hal.h"
+#include "stm32f4xx_hal_gpio.h"
 #include <stdint.h>
 
 /* Private includes ----------------------------------------------------------*/
@@ -44,6 +45,7 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+TIM_HandleTypeDef htim3;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
@@ -55,6 +57,7 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void SN76489_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
+static void TIM3_Init(void);
 static void playFamima(void);
 
 /* Private user code ---------------------------------------------------------*/
@@ -91,6 +94,11 @@ int main(void) {
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  TIM3_Init();
+  if (HAL_TIM_OC_Start(&htim3, TIM_CHANNEL_2) != HAL_OK) {
+    // Starting the timer failed
+    Error_Handler();
+  }
   SN76489_GPIO_Init();
   MX_USART2_UART_Init();
   // Mute All
@@ -99,7 +107,8 @@ int main(void) {
 
   /* Main loop */
   while (1) {
-    playFamima();
+    if (HAL_GPIO_ReadPin(B1_GPIO_Port, B1_Pin) == GPIO_PIN_RESET)
+      playFamima();
     // PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_A4);
     // PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x00);
     // HAL_Delay(EIGHTH_DELAY_MS_95BPM);
@@ -114,88 +123,88 @@ int main(void) {
  */
 static void playFamima(void) {
   // F#
-  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_F5);
-  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x00);
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_FS5);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x08);
   HAL_Delay(EIGHTH_DELAY_MS_95BPM);
   PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x0F);
 
   // D
-  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_DB5);
-  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x00);
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_D5);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x08);
   HAL_Delay(EIGHTH_DELAY_MS_95BPM);
   PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x0F);
 
   // F# + A
-  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_AB5);
-  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_1, NOTE_F4);
-  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x00);
-  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_1, 0x00);
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_A4);
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_1, NOTE_FS4);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x04);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_1, 0x04);
   HAL_Delay(EIGHTH_DELAY_MS_95BPM);
   PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x0F);
   PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_1, 0x0F);
 
   // D
-  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_DB5);
-  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x00);
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_D5);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x08);
   HAL_Delay(EIGHTH_DELAY_MS_95BPM);
   PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x0F);
 
   // A + E
-  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_C5);
-  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_1, NOTE_EB5);
-  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x00);
-  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_1, 0x00);
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_E5);
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_1, NOTE_A4);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x04);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_1, 0x04);
   HAL_Delay(EIGHTH_DELAY_MS_95BPM);
   PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x0F);
   PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_1, 0x0F);
 
   // A
-  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_AB5);
-  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x00);
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_A5);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x08);
   HAL_Delay(QUARTER_DELAY_MS_95BPM);
   PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x0F);
 
   // E
-  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_EB4);
-  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x00);
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_E4);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x08);
   HAL_Delay(EIGHTH_DELAY_MS_95BPM);
   PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x0F);
 
   // A + E
-  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_AB5);
-  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_1, NOTE_EB5);
-  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x00);
-  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_1, 0x00);
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_A4);
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_1, NOTE_E5);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x04);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_1, 0x04);
   HAL_Delay(EIGHTH_DELAY_MS_95BPM);
   PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x0F);
   PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_1, 0x0F);
 
   // F#
-  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_F5);
-  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x00);
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_FS5);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x08);
   HAL_Delay(EIGHTH_DELAY_MS_95BPM);
   PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x0F);
 
   // A + E
-  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_AB5);
-  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_1, NOTE_EB5);
-  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x00);
-  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_1, 0x00);
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_A4);
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_1, NOTE_E5);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x04);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_1, 0x04);
   HAL_Delay(EIGHTH_DELAY_MS_95BPM);
   PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x0F);
   PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_1, 0x0F);
 
   // F#
-  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_AB5);
-  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x00);
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_A4);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x08);
   HAL_Delay(EIGHTH_DELAY_MS_95BPM);
   PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x0F);
 
   // F# + D
-  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_DB5);
-  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_1, NOTE_F4);
-  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x00);
-  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_1, 0x00);
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_0, NOTE_FS4);
+  PSG_SetFrequency(SN76489AN_TONE_CHANNEL_1, NOTE_D5);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x04);
+  PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_1, 0x04);
   HAL_Delay(QUARTER_DELAY_MS_95BPM);
   PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_0, 0x0F);
   PSG_SetAttenuation(SN76489AN_TONE_CHANNEL_1, 0x0F);
@@ -298,8 +307,8 @@ static void MX_GPIO_Init(void) {
 
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : LD2_Pin */
@@ -308,8 +317,6 @@ static void MX_GPIO_Init(void) {
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
-
-
 }
 
 /**
@@ -334,16 +341,20 @@ static void SN76489_GPIO_Init(void) {
   HAL_GPIO_WritePin(SN_D7_GPIO_PORT, SN_D7_PIN, GPIO_PIN_RESET);
 
   /* Configure common GPIO settings */
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;      // Push-Pull: Actively drives HIGH and LOW.
-  GPIO_InitStruct.Pull = GPIO_NOPULL;              // No internal pull-up or pull-down needed.
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;    // High speed for fast bit-banging.
+  GPIO_InitStruct.Mode =
+      GPIO_MODE_OUTPUT_PP; // Push-Pull: Actively drives HIGH and LOW.
+  GPIO_InitStruct.Pull =
+      GPIO_NOPULL; // No internal pull-up or pull-down needed.
+  GPIO_InitStruct.Speed =
+      GPIO_SPEED_FREQ_HIGH; // High speed for fast bit-banging.
 
   /* Configure pins on GPIOA */
   GPIO_InitStruct.Pin = SN_D0_PIN | SN_D5_PIN | SN_D6_PIN;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /* Configure pins on GPIOB */
-  GPIO_InitStruct.Pin = SN_D1_PIN | SN_D2_PIN | SN_D3_PIN | SN_D4_PIN | SN_WE_PIN;
+  GPIO_InitStruct.Pin =
+      SN_D1_PIN | SN_D2_PIN | SN_D3_PIN | SN_D4_PIN | SN_WE_PIN;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /* Configure pins on GPIOC */
@@ -351,9 +362,48 @@ static void SN76489_GPIO_Init(void) {
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 }
 
-/* USER CODE BEGIN 4 */
+/**
+ * @brief TIM3 Initialization Function
+ * @param None
+ * @retval None
+ */
+void TIM3_Init(void) {
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+  TIM_OC_InitTypeDef sConfigOC = {0};
 
-/* USER CODE END 4 */
+  htim3.Instance = TIM3;
+  htim3.Init.Prescaler = 0;
+  htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim3.Init.Period = 9;
+  htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+
+  if (HAL_TIM_Base_Init(&htim3) != HAL_OK) {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim3, &sClockSourceConfig) != HAL_OK) {
+    Error_Handler();
+  }
+  if (HAL_TIM_OC_Init(&htim3) != HAL_OK) {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK) {
+    Error_Handler();
+  }
+  sConfigOC.OCMode = TIM_OCMODE_TOGGLE;
+  sConfigOC.Pulse = 5;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  if (HAL_TIM_OC_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_2) != HAL_OK) {
+    Error_Handler();
+  }
+
+  HAL_TIM_MspPostInit(&htim3);
+}
 
 /**
  * @brief  This function is executed in case of error occurrence.
